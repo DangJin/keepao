@@ -9,7 +9,15 @@
 namespace app\admin\model;
 
 
-class Region
-{
+use think\Model;
 
+class Region extends Model
+{
+    protected $pk = 'id';
+
+    public function select()
+    {
+        $region = $this->where('parent_code', '100000')->select();
+        dump($region);
+    }
 }
