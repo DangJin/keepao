@@ -25,6 +25,7 @@ class Region extends Common
         $page = empty($this->data['page']) ? 1 : $this->data['page'];
         $limit = empty($this->data['limit']) ? 10 : $this->data['limit'];
 
+
         if (!empty($this->data['id'])) {
             return $this->model->getById($this->data['id']);
         } else if (!empty($this->data['parent_code'])) {
