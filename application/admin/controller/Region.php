@@ -25,10 +25,11 @@ class Region extends Common
         $page = empty($this->data['page']) ? 1 : $this->data['page'];
         $limit = empty($this->data['limit']) ? 10 : $this->data['limit'];
 
-        if (isset($data['id'])) {
-            return $this->model->getById($data['id']);
-        } else if (isset($data['parent_code'])) {
-            return $this->model->getByParent($data['parent_code']);
+
+        if (!empty($this->data['id'])) {
+            return $this->model->getById($this->data['id']);
+        } else if (!empty($this->data['parent_code'])) {
+            return $this->model->getByParent($this->data['parent_code']);
         } else {
             return $this->model->select();
         }
