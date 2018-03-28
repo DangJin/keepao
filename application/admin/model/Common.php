@@ -15,6 +15,8 @@ class Common  extends Model
 {
     protected $pk = 'id';
 
+    protected $resultSetType = 'collection';
+
     //自动填充
     protected $insert = ['state' => 1, 'isdel' => 0];
 
