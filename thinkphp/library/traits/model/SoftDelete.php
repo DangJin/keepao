@@ -19,10 +19,7 @@ trait SoftDelete
     {
         $field = $this->getDeleteTimeField();
 
-        if ($field && !empty($this->data[$field])) {
-            return true;
-        }
-        return false;
+        return !empty($this->data[$field]);
     }
 
     /**
@@ -45,11 +42,7 @@ trait SoftDelete
         $model = new static();
         $field = $model->getDeleteTimeField(true);
 
-        if ($field) {
-            return $model->getQuery()->useSoftDelete($field, ['not null', '']);
-        } else {
-            return $model->getQuery();
-        }
+        return $model->getQuery()->useSoftDelete($field, ['not null', '']);
     }
 
     /**
@@ -65,7 +58,7 @@ trait SoftDelete
         }
 
         $name = $this->getDeleteTimeField();
-        if ($name && !$force) {
+        if (!$force) {
             // 软删除
             $this->data[$name] = $this->autoWriteTimestamp($name);
             $result            = $this->isUpdate()->save();
@@ -146,15 +139,11 @@ trait SoftDelete
 
         $name = $this->getDeleteTimeField();
 
-        if ($name) {
-            // 恢复删除
-            return $this->getQuery()
-                ->useSoftDelete($name, ['not null', ''])
-                ->where($where)
-                ->update([$name => null]);
-        } else {
-            return 0;
-        }
+        // 恢复删除
+        return $this->getQuery()
+            ->useSoftDelete($name, ['not null', ''])
+            ->where($where)
+            ->update([$name => null]);
     }
 
     /**
@@ -165,8 +154,7 @@ trait SoftDelete
      */
     protected function base($query)
     {
-        $field = $this->getDeleteTimeField(true);
-        return $field ? $query->useSoftDelete($field) : $query;
+        return $query->useSoftDelete($this->getDeleteTimeField(true));
     }
 
     /**
@@ -180,10 +168,6 @@ trait SoftDelete
         $field = property_exists($this, 'deleteTime') && isset($this->deleteTime) ?
         $this->deleteTime :
         'delete_time';
-
-        if (false === $field) {
-            return false;
-        }
 
         if (!strpos($field, '.')) {
             $field = '__TABLE__.' . $field;

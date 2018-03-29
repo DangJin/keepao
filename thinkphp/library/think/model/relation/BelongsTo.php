@@ -52,7 +52,6 @@ class BelongsTo extends OneToOne
             call_user_func_array($closure, [ & $this->query]);
         }
         $relationModel = $this->query
-            ->removeWhereField($this->localKey)
             ->where($this->localKey, $this->parent->$foreignKey)
             ->relation($subRelation)
             ->find();
@@ -129,7 +128,6 @@ class BelongsTo extends OneToOne
         }
 
         if (!empty($range)) {
-            $this->query->removeWhereField($localKey);
             $data = $this->eagerlyWhere($this->query, [
                 $localKey => [
                     'in',
@@ -173,8 +171,7 @@ class BelongsTo extends OneToOne
     {
         $localKey   = $this->localKey;
         $foreignKey = $this->foreignKey;
-        $this->query->removeWhereField($localKey);
-        $data = $this->eagerlyWhere($this->query, [$localKey => $result->$foreignKey], $localKey, $relation, $subRelation, $closure);
+        $data       = $this->eagerlyWhere($this->query, [$localKey => $result->$foreignKey], $localKey, $relation, $subRelation, $closure);
         // 关联模型
         if (!isset($data[$result->$foreignKey])) {
             $relationModel = null;
@@ -222,22 +219,5 @@ class BelongsTo extends OneToOne
         $this->parent->save();
 
         return $this->parent->setRelation($this->relation, null);
-    }
-
-    /**
-     * 执行基础查询（仅执行一次）
-     * @access protected
-     * @return void
-     */
-    protected function baseQuery()
-    {
-        if (empty($this->baseQuery)) {
-            if (isset($this->parent->{$this->foreignKey})) {
-                // 关联查询带入关联条件
-                $this->query->where($this->localKey, '=', $this->parent->{$this->foreignKey});
-            }
-
-            $this->baseQuery = true;
-        }
     }
 }

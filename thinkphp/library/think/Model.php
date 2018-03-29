@@ -192,7 +192,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         $con = Db::connect($connection);
         // 设置当前模型 确保查询返回模型对象
         $queryClass = $this->query ?: $con->getConfig('query');
-        $query      = new $queryClass($con, $this);
+        $query      = new $queryClass($con, $this->class);
 
         // 设置当前数据表和模型名
         if (!empty($this->table)) {
@@ -206,19 +206,6 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
         }
 
         return $query;
-    }
-
-    /**
-     * 创建新的模型实例
-     * @access public
-     * @param  array|object $data 数据
-     * @param  bool         $isUpdate 是否为更新
-     * @param  mixed        $where 更新条件
-     * @return Model
-     */
-    public function newInstance($data = [], $isUpdate = false, $where = null)
-    {
-        return (new static($data))->isUpdate($isUpdate, $where);
     }
 
     /**
@@ -612,7 +599,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
      */
     protected function getRelationData(Relation $modelRelation)
     {
-        if ($this->parent && !$modelRelation->isSelfRelation() && get_class($modelRelation->getModel()) == get_class($this->parent)) {
+        if ($this->parent && get_class($this->parent) == $modelRelation->getModel()) {
             $value = $this->parent;
         } else {
             // 首先获取关联数据
@@ -679,11 +666,7 @@ abstract class Model implements \JsonSerializable, \ArrayAccess
                 $value = empty($value) ? new \stdClass() : json_decode($value);
                 break;
             case 'serialize':
-                try {
-                    $value = unserialize($value);
-                } catch (\Exception $e) {
-                    $value = null;
-                }
+                $value = unserialize($value);
                 break;
             default:
                 if (false !== strpos($type, '\\')) {

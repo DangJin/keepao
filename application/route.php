@@ -16,16 +16,23 @@
 );
 
 \think\Route::group(
+    'device', [
+        'mac/upload' => ['device/Sport/uploadSport', ['method' => 'POST']]
+    ]
+);
+
+
+\think\Route::group(
     'wechat', [
         'init' => ['wechat/Wx/serve', ['method' => 'GET|POST']],
     ]
 );
 
 \think\Route::group(
-    'wepay', [
-        'init'      => ['wxpay/index/index', ['method' => 'GET']],
+    'wxpay', [
+        'init' => ['wxpay/index/index', ['method' => 'GET']],
         'payConfig' => ['wxpay/Jssdk/getJssdk', ['method' => 'POST']],
-        'order'     => ['wxpay/Order/orderUnify', ['method' => 'GET']],
-        'notice'    => ['wxpay/Order/notice', ['method' => 'POST ']],
+        'order' => ['wxpay/Order/orderUnify', ['method' => 'GET']],
+        'notice' => ['wxpay/Order/notice', ['method' => 'POST ']],
     ]
 );

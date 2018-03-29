@@ -42,6 +42,7 @@ class Validate
         'float'       => ':attribute must be float',
         'boolean'     => ':attribute must be bool',
         'email'       => ':attribute not a valid email address',
+        'mobile'      => ':attribute not a valid mobile',
         'array'       => ':attribute must be a array',
         'accepted'    => ':attribute must be yes,on or 1',
         'date'        => ':attribute not a valid datetime',
@@ -1195,7 +1196,7 @@ class Validate
             // 不是正则表达式则两端补上/
             $rule = '/^' . $rule . '$/';
         }
-        return is_scalar($value) && 1 === preg_match($rule, (string) $value);
+        return 1 === preg_match($rule, (string) $value);
     }
 
     /**
